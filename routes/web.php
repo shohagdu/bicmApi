@@ -16,3 +16,20 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+
+
+
+$router->group(['prefix'=>'api'],function () use ($router){
+
+    $router->post('/login','AuthController@login');
+    $router->post('/register','AuthController@register');
+    $router->post('/logout','AuthController@logout');
+
+
+    $router->group(['middleware'=>'auth'],function () use ($router){
+        $router->get('/journal','JournalController@index');
+        $router->post('/journal','JournalController@store');
+        $router->put('/journal/{id}','JournalController@update');
+        $router->delete('/destroy/{id}','JournalController@destroy');
+    });
+});
