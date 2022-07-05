@@ -2,93 +2,155 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Models\Registration;
 
 class AuthController extends Controller
 {
+    /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['login','register']]);
+    }
+
+    /**
+     * Get a JWT token via given credentials.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function login(Request $request)
     {
-        return $request->all();
-        $email = $request->email;
-        $password = $request->password;
+        $credentials = $request->only('email', 'password', 'user_type');
 
-        // Check if field is not empty
-        if (empty($email) or empty($password)) {
-            return response()->json(['status' => 'error', 'message' => 'You must fill all fields']);
+        if ($token = $this->guard()->attempt($credentials)) {
+            return $this->respondWithToken($token);
         }
 
-        $client = new Client();
-
-        try {
-            return $client->post(config('service.passport.login_endpoint'), [
-                "form_params" => [
-                    "client_secret" => config('service.passport.client_secret'),
-                    "grant_type" => "password",
-                    "client_id" => config('service.passport.client_id'),
-                    "username" => $request->email,
-                    "password" => $request->password
-                ]
-            ]);
-        } catch (BadResponseException $e) {
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
-        }
+        return response()->json(['error' => 'Unauthorized'], 401);
     }
 
     public function register(Request $request)
     {
-        $name = $request->name;
+        $first_name = $request->first_name;
+        $lastname = $request->lastname;
         $email = $request->email;
+        $phone_no = $request->phone_no;
         $password = $request->password;
+        $auth_title = $request->auth_title;
+        $user_type = $request->user_type;
+        $alt_email = $request->alt_email;
+        $organization_name = $request->organization_name;
+        $country = $request->country;
 
         // Check if field is not empty
-        if (empty($name) or empty($email) or empty($password)) {
+        if (empty($first_name) or empty($email) or empty($password)) {
             return response()->json(['status' => 'error', 'message' => 'You must fill all the fields']);
         }
-
         // Check if email is valid
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return response()->json(['status' => 'error', 'message' => 'You must enter a valid email']);
         }
-
         // Check if password is greater than 5 character
         if (strlen($password) < 6) {
             return response()->json(['status' => 'error', 'message' => 'Password should be min 6 character']);
         }
 
-        // Check if user already exist
-        if (User::where('email', '=', $email)->exists()) {
-            return response()->json(['status' => 'error', 'message' => 'User already exists with this email']);
-        }
+        $user = new User();
+        $user->name = $first_name." ".$lastname;
+        $user->email = $email;
+        $user->password = bcrypt($password);
+        $user->user_type = $user_type;
+        $seve_user = $user->save();
 
-        // Create new user
-        try {
-            $user = new User();
-            $user->name = $name;
-            $user->email = $email;
-            $user->password = app('hash')->make($password);
+        $registration = new Registration();
+        $registration->user_id = $user->id;
+        $registration->first_name = $first_name;
+        $registration->lastname = $lastname;
+        $registration->email = $email;
+        $registration->phone_no = $phone_no;
+        $registration->auth_title = $auth_title;
+        $registration->userType = $user_type;
+        $registration->alt_email = $alt_email;
+        $registration->organization_name = $organization_name;
+        $registration->country = $country;
 
-            if ($user->save()) {
-                // Will call login method
-                return $this->login($request);
-            }
-        } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+        if ($registration->save()) {
+            return response()->json(['status' => 'success', 'message' =>  "Registration Successful, Plesae Login"]);
+        }else{
+            return response()->json(['status' => 'error', 'message' =>  "Something Went Wrong"]);
         }
+        
     }
 
-    public function logout(Request $request)
+    /**
+     * Get the authenticated User
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function me()
     {
-        try {
-            auth()->user()->tokens()->each(function ($token) {
-                $token->delete();
-            });
+        return response()->json($this->guard()->user());
+    }
+    public function profile(Request $request)
+    {
+        $user = User::find($request->userId);
+        return response()->json(['status' => 'success', 'message' =>  "Data Found", 'data' => $user]);
+    }
+    /**
+     * Log the user out (Invalidate the token)
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function logout()
+    {
+        $this->guard()->logout();
 
-            return response()->json(['status' => 'success', 'message' => 'Logged out successfully']);
-        } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
-        }
+        return response()->json(['message' => 'Successfully logged out']);
+    }
+
+    /**
+     * Refresh a token.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function refresh()
+    {
+        return $this->respondWithToken($this->guard()->refresh());
+    }
+
+    /**
+     * Get the token array structure.
+     *
+     * @param  string $token
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function respondWithToken($token)
+    {
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => $this->guard()->factory()->getTTL() * 60,
+            'user'       => auth()->user()
+        ]);
+    }
+
+    /**
+     * Get the guard to be used during authentication.
+     *
+     * @return \Illuminate\Contracts\Auth\Guard
+     */
+    public function guard()
+    {
+        return Auth::guard();
     }
 }
