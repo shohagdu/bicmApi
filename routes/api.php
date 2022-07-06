@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\WebContentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,5 +30,7 @@ Route::group(['middleware' => 'api'], function(){
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
     Route::post('profile', [AuthController::class, 'profile']);
+
+    Route::post('save-web-content', [WebContentController::class, 'store']);
 
 });
