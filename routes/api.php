@@ -31,6 +31,10 @@ Route::group(['middleware' => 'api'], function(){
     Route::post('me', [AuthController::class, 'me']);
     Route::post('profile', [AuthController::class, 'profile']);
 
+    Route::get('about', [WebContentController::class, 'about']);
+    Route::get('publisherinformation', [WebContentController::class, 'publisherinformation']);
+    Route::get('permission', [WebContentController::class, 'permission']);
+    Route::get('openaccess', [WebContentController::class, 'openaccess']);
     Route::post('save-web-content', [WebContentController::class, 'store']);
 
 });
