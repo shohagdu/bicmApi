@@ -33,8 +33,12 @@ Route::group(['middleware' => 'api'], function(){
 
     Route::get('about', [WebContentController::class, 'about']);
     Route::get('publisherinformation', [WebContentController::class, 'publisherinformation']);
+    Route::get('authorguideline', [WebContentController::class, 'authorguideline']);
     Route::get('permission', [WebContentController::class, 'permission']);
     Route::get('openaccess', [WebContentController::class, 'openaccess']);
+    Route::get('contact', [WebContentController::class, 'contact']);
     Route::post('save-web-content', [WebContentController::class, 'store']);
+    Route::post('issue-save', [WebContentController::class, 'issue_save']);
+    Route::get('get-issue', [WebContentController::class, 'get_issue']);
 
 });

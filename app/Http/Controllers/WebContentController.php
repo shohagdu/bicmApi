@@ -24,6 +24,14 @@ class WebContentController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Data Not Found', 'data'=> '' ]);
         }
     }
+    public function authorguideline(){
+        $authorguideline= WebContent::where('type', 6)->orderBy('id','DESC')->first();
+        if(!empty($authorguideline)){
+            return response()->json(['status' => 'success', 'message' => 'Data Found', 'data'=> $authorguideline ]);
+        }else{
+            return response()->json(['status' => 'error', 'message' => 'Data Not Found', 'data'=> '' ]);
+        }
+    }
     public function permission(){
         $permission= WebContent::where('type', 5)->orderBy('id','DESC')->first();
         if(!empty($permission)){
@@ -36,6 +44,14 @@ class WebContentController extends Controller
         $openaccess= WebContent::where('type', 7)->orderBy('id','DESC')->first();
         if(!empty($openaccess)){
             return response()->json(['status' => 'success', 'message' => 'Data Found', 'data'=> $openaccess ]);
+        }else{
+            return response()->json(['status' => 'error', 'message' => 'Data Not Found', 'data'=> '' ]);
+        }
+    }
+    public function contact(){
+        $contact= WebContent::where('type', 4)->orderBy('id','DESC')->first();
+        if(!empty($contact)){
+            return response()->json(['status' => 'success', 'message' => 'Data Found', 'data'=> $contact ]);
         }else{
             return response()->json(['status' => 'error', 'message' => 'Data Not Found', 'data'=> '' ]);
         }
@@ -72,5 +88,30 @@ class WebContentController extends Controller
         }else{
             return response()->json(['status' => 'error', 'message' =>  "Something Went Wrong"]);
         }
+    }
+    public function issue_save(Request $request){
+       // return response()->json(['status' => 'success', 'message' =>  "Successfully Added"]);
+
+        $issueimage = $request->file('image')->store('images', 'public');
+
+       $save =  WebContent::create([
+            'title' => $request->title,
+            'date' => $request->date,
+            'description' => $request->description,
+            'image' => $issueimage,
+            'type' => 8,
+            'created_by' => 1,
+            'created_ip' => request()->ip(),
+            'created_at' => date('Y-m-d H:i:s'),
+        ]);
+
+        if ($save) {
+            return response()->json(['status' => 'success', 'message' =>  "Successfully Added"]);
+        }else{
+            return response()->json(['status' => 'error', 'message' =>  "Something Went Wrong"]);
+        }
+    }
+    public function get_issue(){
+        return response()->json(['status' => 'success', 'message' =>  "Successfully Get"]);
     }
 }
