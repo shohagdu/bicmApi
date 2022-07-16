@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 05, 2022 at 02:41 PM
+-- Generation Time: Jul 16, 2022 at 05:33 AM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 8.0.15
 
@@ -871,6 +871,38 @@ INSERT INTO `users` (`id`, `name`, `email`, `user_type`, `email_verified_at`, `p
 (17, 'Abid Hossain', 'abid@gmail.com', 1, NULL, '$2y$10$xn3A9e/h0cl6VpawxR.emuHh7/NP/DXTA6uMU0cTkul9V/JlajAIm', NULL, '2022-07-05 02:29:02', '2022-07-05 02:29:02'),
 (18, 'Aziz Khan', 'aziz@gmail.com', 3, NULL, '$2y$10$Z2vWTEHvRhvO2pAPKQQmputc0mBZNdDaVYPvA5RP3mrUwdqQ6aVJq', NULL, '2022-07-05 03:02:18', '2022-07-05 03:02:18');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `web_contents`
+--
+
+CREATE TABLE `web_contents` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `title` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `image` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `type` tinyint(4) NOT NULL COMMENT '1=about,2=featured,3=publisher information, 4=contact, 5=permissions, 6=author guideline, 7= open access 8=current issue 9=all issue',
+  `is_active` tinyint(4) NOT NULL DEFAULT 1,
+  `created_by` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `updated_by` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_ip` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `updated_ip` varchar(15) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `web_contents`
+--
+
+INSERT INTO `web_contents` (`id`, `title`, `description`, `image`, `type`, `is_active`, `created_by`, `updated_by`, `created_ip`, `updated_ip`, `created_at`, `updated_at`) VALUES
+(39, NULL, 'The Journal of Financial Markets and Governance focuses on facilitating the exchange of scholarly knowledge between academics, industry stakeholders and the regulators across the world in the fields of finance, accounting and governance studies. 4', NULL, 1, 1, '1', '1', '127.0.0.1', '127.0.0.1', '2022-07-07 01:37:52', '2022-07-07 01:37:59'),
+(40, NULL, '4efqrq', NULL, 2, 1, '1', '1', '127.0.0.1', '127.0.0.1', '2022-07-07 01:38:29', '2022-07-07 01:39:00'),
+(41, NULL, 'Bangladesh Institute of Capital Market (BICM) was established on July 24, 2008 as an institute to impart practical capital market education and training. The Institute is gradually emerging as a center of excellence for professional development of capital market intermediaries and full spectrum of market professionals through disseminating recent and updated theoretical and practical knowledge. hhhh', NULL, 3, 1, '1', '1', '127.0.0.1', '127.0.0.1', '2022-07-07 03:18:04', '2022-07-07 03:28:03'),
+(42, NULL, 'df aefaf a fas hhh', NULL, 5, 1, '1', '1', '127.0.0.1', '127.0.0.1', '2022-07-07 03:53:48', '2022-07-07 03:53:52'),
+(43, NULL, 'Submissions to JFMG is always free. JFMG currently offers ‘Open Access’ without any charge to all published articles in addition to printed versions. Any standard charge to be imposed specifically for Open Access would be decided and announced in the future. gg', NULL, 7, 1, '1', '1', '127.0.0.1', '127.0.0.1', '2022-07-07 04:08:11', '2022-07-07 04:08:16');
+
 --
 -- Indexes for dumped tables
 --
@@ -983,6 +1015,12 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `users_email_unique` (`email`);
 
 --
+-- Indexes for table `web_contents`
+--
+ALTER TABLE `web_contents`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -1081,6 +1119,12 @@ ALTER TABLE `sr_reviwer_comments`
 --
 ALTER TABLE `users`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+
+--
+-- AUTO_INCREMENT for table `web_contents`
+--
+ALTER TABLE `web_contents`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
