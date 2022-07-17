@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\WebContent;
+use App\Models\User;
 use DB;
 
 class WebContentController extends Controller
@@ -90,8 +91,6 @@ class WebContentController extends Controller
         }
     }
     public function issue_save(Request $request){
-       // return response()->json(['status' => 'success', 'message' =>  "Successfully Added"]);
-
         $issueimage = $request->file('image')->store('images', 'public');
 
        $save =  WebContent::create([
@@ -99,7 +98,7 @@ class WebContentController extends Controller
             'date' => $request->date,
             'description' => $request->description,
             'image' => $issueimage,
-            'type' => 8,
+            'type' => $request->type,
             'created_by' => 1,
             'created_ip' => request()->ip(),
             'created_at' => date('Y-m-d H:i:s'),
@@ -114,4 +113,5 @@ class WebContentController extends Controller
     public function get_issue(){
         return response()->json(['status' => 'success', 'message' =>  "Successfully Get"]);
     }
+   
 }

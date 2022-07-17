@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\WebContentController;
+use App\Http\Controllers\RegistrationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,11 @@ Route::group(['middleware' => 'api'], function(){
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
     Route::post('profile', [AuthController::class, 'profile']);
+
+    Route::get('author-list', [RegistrationController::class, 'author_list']);
+    Route::get('author-edit/{id}', [RegistrationController::class, 'author_edit']);
+    Route::put('author-update/{id}', [RegistrationController::class, 'author_update']);
+    Route::get('author-delete/{id}', [RegistrationController::class, 'author_delete']);
 
     Route::get('about', [WebContentController::class, 'about']);
     Route::get('publisherinformation', [WebContentController::class, 'publisherinformation']);
