@@ -33,9 +33,12 @@ Route::group(['middleware' => 'api'], function(){
     Route::post('profile', [AuthController::class, 'profile']);
 
     Route::get('author-list', [RegistrationController::class, 'author_list']);
-    Route::get('author-edit/{id}', [RegistrationController::class, 'author_edit']);
-    Route::put('author-update/{id}', [RegistrationController::class, 'author_update']);
-    Route::get('author-delete/{id}', [RegistrationController::class, 'author_delete']);
+    Route::get('user-edit/{id}', [RegistrationController::class, 'user_edit']);
+    Route::put('user-update/{id}', [RegistrationController::class, 'user_update']);
+    Route::get('user-delete/{id}', [RegistrationController::class, 'user_delete']);
+
+    Route::get('editorial-list', [RegistrationController::class, 'editorial_list']);
+    Route::get('reviewer-list', [RegistrationController::class, 'reviewer_list']);
 
     Route::get('about', [WebContentController::class, 'about']);
     Route::get('publisherinformation', [WebContentController::class, 'publisherinformation']);
