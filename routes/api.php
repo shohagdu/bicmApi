@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\WebContentController;
 use App\Http\Controllers\RegistrationController;
+use App\Http\Controllers\PublishedJournalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +40,9 @@ Route::group(['middleware' => 'api'], function(){
 
     Route::get('editorial-list', [RegistrationController::class, 'editorial_list']);
     Route::get('reviewer-list', [RegistrationController::class, 'reviewer_list']);
+
+    Route::post('save-journal', [PublishedJournalController::class, 'save_journal']);
+    Route::get('published-journal-list', [PublishedJournalController::class, 'published_journal_list']);
 
     Route::get('about', [WebContentController::class, 'about']);
     Route::get('publisherinformation', [WebContentController::class, 'publisherinformation']);
