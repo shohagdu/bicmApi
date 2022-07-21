@@ -6,6 +6,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\WebContentController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\PublishedJournalController;
+use App\Http\Controllers\ManuscriptController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +34,7 @@ Route::group(['middleware' => 'api'], function(){
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
     Route::post('profile', [AuthController::class, 'profile']);
+    Route::get('get-user-details/{id}', [UserController::class, 'get_user_details']);
 
     Route::get('author-list', [RegistrationController::class, 'author_list']);
     Route::get('user-edit/{id}', [RegistrationController::class, 'user_edit']);
@@ -43,6 +46,12 @@ Route::group(['middleware' => 'api'], function(){
 
     Route::post('save-journal', [PublishedJournalController::class, 'save_journal']);
     Route::get('published-journal-list', [PublishedJournalController::class, 'published_journal_list']);
+    Route::get('published-journal-edit/{id}', [PublishedJournalController::class, 'published_journal_edit']);
+    Route::put('published-journal-update/{id}', [PublishedJournalController::class, 'published_journal_update']);
+    Route::get('published-journal-delete/{id}', [PublishedJournalController::class, 'published_journal_delete']);
+
+    Route::post('save-menuscript ', [ManuscriptController::class, 'save_menuscript']);
+    Route::get('published-menuscript-list', [ManuscriptController::class, 'published_menuscript_list']);
 
     Route::get('about', [WebContentController::class, 'about']);
     Route::get('publisherinformation', [WebContentController::class, 'publisherinformation']);
