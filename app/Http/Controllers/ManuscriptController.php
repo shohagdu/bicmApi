@@ -53,4 +53,19 @@ class ManuscriptController extends Controller
             return response()->json(['status' => 'error', 'message' =>  "Something Went Wrong"]);
         }
     }
+
+    public function published_menuscript_details ($id){
+        $published_manuscript = PublishedManuscript::find($id);
+
+        $paperUniqID = $published_manuscript->paperUniqID;
+            
+        if ($published_manuscript) {
+            return response()->json(['status' => 'success', 'message' =>  "Data Found", "data" => [
+                'published_manuscript' => $published_manuscript,
+                'paperUniqID' => $paperUniqID
+            ] ]);
+        }else{
+            return response()->json(['status' => 'error', 'message' =>  "Data Not Found" , 'data'=> []]);
+        }
+    }
 }

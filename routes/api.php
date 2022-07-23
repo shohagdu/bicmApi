@@ -52,6 +52,7 @@ Route::group(['middleware' => 'api'], function(){
 
     Route::post('save-menuscript ', [ManuscriptController::class, 'save_menuscript']);
     Route::get('published-menuscript-list', [ManuscriptController::class, 'published_menuscript_list']);
+    Route::get('published-menuscript-details/{id}', [ManuscriptController::class, 'published_menuscript_details']);
 
     Route::get('about', [WebContentController::class, 'about']);
     Route::get('publisherinformation', [WebContentController::class, 'publisherinformation']);
