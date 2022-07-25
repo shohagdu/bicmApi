@@ -35,7 +35,7 @@ class AuthController extends Controller
             return $this->respondWithToken($token);
         }
 
-        return response()->json(['error' => 'Unauthorized'], 401);
+        return response()->json(['status' => 'error', 'message' => 'Email password & User Type Does Not Match. Please Try Again', 'data' => $credentials]);
     }
 
     public function register(Request $request)

@@ -83,10 +83,12 @@ class ManuscriptController extends Controller
         }
     }
 
-    public function update_menuscript(Request $request, $id){
+    public function update_menuscript(Request $request){
+
+        $id = $request->id;
 
         $papertitle = $request->papertitle;
-        return response()->json(['status' => 'success', 'message' =>  "Succesfully Manuscript Updated", 'data'=> $papertitle]);
+        return response()->json(['status' => 'success', 'message' =>  "Succesfully Manuscript Updated", 'data'=> $id]);
     }
     public function published_menuscript_details ($id){
         $published_manuscript = PublishedManuscript::find($id);

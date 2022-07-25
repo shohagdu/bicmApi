@@ -8,6 +8,7 @@ use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\PublishedJournalController;
 use App\Http\Controllers\ManuscriptController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VolumeIssueController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,7 +54,14 @@ Route::group(['middleware' => 'api'], function(){
     Route::post('save-menuscript ', [ManuscriptController::class, 'save_menuscript']);
     Route::get('published-menuscript-list', [ManuscriptController::class, 'published_menuscript_list']);
     Route::get('published-menuscript-details/{id}', [ManuscriptController::class, 'published_menuscript_details']);
-    Route::put('update-menuscript/{id}', [ManuscriptController::class, 'update_menuscript']);
+    Route::post('update-menuscript', [ManuscriptController::class, 'update_menuscript']);
+
+    Route::post('save-volume-issue', [VolumeIssueController::class, 'save_volume_issue']);
+    Route::get('volume-issue-list', [VolumeIssueController::class, 'volume_issue_list']);
+    Route::get('volume-issue-edit/{id}', [VolumeIssueController::class, 'volume_issue_edit']);
+    Route::put('volume-issue-update/{id}', [VolumeIssueController::class, 'volume_issue_update']);
+    Route::get('volume-issue-delete/{id}', [VolumeIssueController::class, 'volume_issue_delete']);
+
 
     Route::get('about', [WebContentController::class, 'about']);
     Route::get('publisherinformation', [WebContentController::class, 'publisherinformation']);
