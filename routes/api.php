@@ -51,10 +51,16 @@ Route::group(['middleware' => 'api'], function(){
     Route::put('published-journal-update/{id}', [PublishedJournalController::class, 'published_journal_update']);
     Route::get('published-journal-delete/{id}', [PublishedJournalController::class, 'published_journal_delete']);
 
-    Route::post('save-menuscript ', [ManuscriptController::class, 'save_menuscript']);
+    Route::post('save-menuscript', [ManuscriptController::class, 'save_menuscript']);
     Route::get('published-menuscript-list', [ManuscriptController::class, 'published_menuscript_list']);
+    Route::get('published-menuscript-get/{id}', [ManuscriptController::class, 'published_menuscript_get']);
     Route::get('published-menuscript-details/{id}', [ManuscriptController::class, 'published_menuscript_details']);
     Route::post('update-menuscript', [ManuscriptController::class, 'update_menuscript']);
+    Route::get('get-manuscript-author-list/{paperUniqID}', [ManuscriptController::class, 'get_manuscript_author_list']);
+    Route::post('add-new-coauthor', [ManuscriptController::class, 'add_new_coauthor']);
+    Route::get('manuscript-coauthor-delete/{id}', [ManuscriptController::class, 'manuscript_coauthor_delete']);
+
+    Route::post('add-new-menuscript-attahment', [ManuscriptController::class, 'add_new_menuscript_attahment']);
 
     Route::post('save-volume-issue', [VolumeIssueController::class, 'save_volume_issue']);
     Route::get('volume-issue-list', [VolumeIssueController::class, 'volume_issue_list']);
