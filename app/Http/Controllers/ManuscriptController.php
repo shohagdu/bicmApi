@@ -53,6 +53,7 @@ class ManuscriptController extends Controller
         $published_manuscript = PublishedManuscript::find($id);
 
         $paperUniqID = $published_manuscript->paperUniqID;
+        $authorid = $published_manuscript->authorid;
 
 
          $author_list = DB::table('sr_more_author_info')
@@ -61,13 +62,22 @@ class ManuscriptController extends Controller
 
         $attachment_file_list = DB::table('sr_attachment_info')
                     ->where('paperId', $paperUniqID)
-                    ->orderBy('id','DESC')->get();                
+                    ->orderBy('id','DESC')->get();
+
+        $author_menuscript = DB::table('users as USR')
+                    ->select('USR.id as userid', 'REG.auth_title','REG.first_name','REG.lastname', 'REG.organization_name', 'REG.email', 'REG.country')
+                    ->leftJoin('sr_registration as REG', function($join){
+                        $join->on('REG.user_id', '=', 'USR.id');
+                    })
+                    ->where('USR.id','=', $authorid)
+                    ->first();                            
             
         if ($published_manuscript) {
             return response()->json(['status' => 'success', 'message' =>  "Data Found", "data" => [
                 'published_manuscript' => $published_manuscript,
                 'author_list' => $author_list,
-                'attachment_file_list' => $attachment_file_list
+                'attachment_file_list' => $attachment_file_list,
+                'author_menuscript' => $author_menuscript
             ] ]);
         }else{
             return response()->json(['status' => 'error', 'message' =>  "Data Not Found" , 'data'=> []]);
@@ -83,8 +93,21 @@ class ManuscriptController extends Controller
             return response()->json(['status' => 'error', 'message' =>  "Data Not Found" , 'data'=> []]);
         }
     }
+    public function reviewer_menuscript_list ($id){
+        $query = DB::table('sr_editor_reviwer_assign_info as RES')
+                                    ->select('RES.id as asignid', 'MEPS.paperUniqID','MEPS.papertilte', 'MEPS.submit_date_time')
+                                    ->leftJoin('sr_menuscript_info as MEPS', function($join){
+                                    $join->on('MEPS.paperUniqID', '=', 'RES.paperId');
+                                    })
+                                    ->where('RES.assignID', '=', $id);
+             $reviewer_manuscript =  $query->get();                     
 
-    
+        if ($reviewer_manuscript) {
+            return response()->json(['status' => 'success', 'message' =>  "Data Found", "data" => $reviewer_manuscript ]);
+        }else{
+            return response()->json(['status' => 'error', 'message' =>  "Data Not Found" , 'data'=> []]);
+        }
+    }
 
     public function add_new_coauthor(Request $request){ 
 
@@ -137,5 +160,50 @@ class ManuscriptController extends Controller
         }else{
             return response()->json(['status' => 'error', 'message' =>  "Something Went Wrong"]);
         }
+    }
+
+    public function get_menuscript_user($id){
+        $query = DB::table('users as USR')
+                     ->select('USR.id as userid', 'REG.first_name','REG.lastname', 'REG.organization_name', 'REG.email', 'REG.country')
+                     ->lefJoin('sr_registration as REG', function($join){
+                        $join->on('REG.user_id', '=', 'USR.id');
+                     })
+                     ->where('USR.id','=', $id);
+
+            $data =    $query->first();
+
+            if ($author_data) {
+                return response()->json(['status' => 'success', 'message' =>  "Succesfully  Author Get", 'data'=>$data]);
+            }else{
+                return response()->json(['status' => 'error', 'message' =>  "Something Went Wrong"]);
+            }
+    }
+
+    public function assign_menuscript_reviewer(Request $request){
+        $reviewer = $request->reviewer;
+        $paperId  = $request->paperId;
+        $userId   = $request->userId;
+
+        $data = [
+            'paperId'   => $paperId,
+            'entryBy'   => $userId,
+            'assignID'  => $reviewer,
+            'cstatus'   => 1,
+            'type'      => 2,
+            'entryDate' =>  date('Y-m-d H:i:s')
+        ];
+
+        $reviewer_insert = DB::table('sr_editor_reviwer_assign_info')->insert($data);
+
+        $status_menuscript=['status' => 3];
+
+        $status_menuscript_update = DB::table('sr_menuscript_info')->where('paperUniqID', '=',$paperId )->update($status_menuscript);
+
+        if ($reviewer_insert) {
+            return response()->json(['status' => 'success', 'message' =>  "Succesfully  Reviewer Assign", 'data'=>$data]);
+        }else{
+            return response()->json(['status' => 'error', 'message' =>  "Something Went Wrong"]);
+        }
+
     }
 }

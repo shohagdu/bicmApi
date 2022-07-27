@@ -53,12 +53,16 @@ Route::group(['middleware' => 'api'], function(){
 
     Route::post('save-menuscript', [ManuscriptController::class, 'save_menuscript']);
     Route::get('published-menuscript-list', [ManuscriptController::class, 'published_menuscript_list']);
+    Route::get('published-menuscript-pending-list', [ManuscriptController::class, 'published_menuscript_list']);
     Route::get('published-menuscript-get/{id}', [ManuscriptController::class, 'published_menuscript_get']);
+    Route::get('reviewer-menuscript-list/{id}', [ManuscriptController::class, 'reviewer_menuscript_list']);
     Route::get('published-menuscript-details/{id}', [ManuscriptController::class, 'published_menuscript_details']);
     Route::post('update-menuscript', [ManuscriptController::class, 'update_menuscript']);
     Route::get('get-manuscript-author-list/{paperUniqID}', [ManuscriptController::class, 'get_manuscript_author_list']);
     Route::post('add-new-coauthor', [ManuscriptController::class, 'add_new_coauthor']);
+    Route::post('assign-menuscript-reviewer', [ManuscriptController::class, 'assign_menuscript_reviewer']);
     Route::get('manuscript-coauthor-delete/{id}', [ManuscriptController::class, 'manuscript_coauthor_delete']);
+    Route::get('get-menuscript-user/{id}', [ManuscriptController::class, 'get_menuscript_user']);
 
     Route::post('add-new-menuscript-attahment', [ManuscriptController::class, 'add_new_menuscript_attahment']);
 
