@@ -95,7 +95,7 @@ class ManuscriptController extends Controller
     }
     public function reviewer_menuscript_list ($id){
         $query = DB::table('sr_editor_reviwer_assign_info as RES')
-                                    ->select('RES.id as asignid', 'MEPS.paperUniqID','MEPS.papertilte', 'MEPS.submit_date_time')
+                                    ->select('RES.id as asignid', 'MEPS.id as mpaperid','MEPS.paperUniqID','MEPS.papertilte', 'MEPS.submit_date_time')
                                     ->leftJoin('sr_menuscript_info as MEPS', function($join){
                                     $join->on('MEPS.paperUniqID', '=', 'RES.paperId');
                                     })
@@ -104,6 +104,15 @@ class ManuscriptController extends Controller
 
         if ($reviewer_manuscript) {
             return response()->json(['status' => 'success', 'message' =>  "Data Found", "data" => $reviewer_manuscript ]);
+        }else{
+            return response()->json(['status' => 'error', 'message' =>  "Data Not Found" , 'data'=> []]);
+        }
+    }
+    public function reviewer_pending_menuscript_list (){
+        $pending_manuscript = PublishedManuscript::where('status', 3 )->orderBy('id', 'DESC')->get();           
+
+        if ($pending_manuscript) {
+            return response()->json(['status' => 'success', 'message' =>  "Data Found", "data" => $pending_manuscript ]);
         }else{
             return response()->json(['status' => 'error', 'message' =>  "Data Not Found" , 'data'=> []]);
         }
@@ -201,6 +210,40 @@ class ManuscriptController extends Controller
 
         if ($reviewer_insert) {
             return response()->json(['status' => 'success', 'message' =>  "Succesfully  Reviewer Assign", 'data'=>$data]);
+        }else{
+            return response()->json(['status' => 'error', 'message' =>  "Something Went Wrong"]);
+        }
+
+    }
+
+    public function submission_menuscript_reviewer(Request $request){
+
+        $paperId = $request->paperId;
+
+        $data = [
+            'paperId' => $paperId,
+            'comm1'   => $request->comm1,
+            'comm2'   => $request->comm2,
+            'comm3'   => $request->comm3,
+            'comm4'   => $request->comm4,
+            'comm5'   => $request->comm5,
+            'comm6'   => $request->comm6,
+            'recom'   => $request->recom,
+            'con_editor' => $request->con_editor,
+            'com_author' => $request->com_author,
+            'rev_doc'   => $request->file('rev_doc')->store('reviewer', 'public'),
+            'submit_status'   => 1,
+            'submitdate' =>  date('Y-m-d H:i:s')
+        ];
+
+      $reviewer_submission = DB::table('sr_reviwer_comments')->insert($data);
+
+        // $status_menuscript=['status' => 3];
+
+        // $status_menuscript_update = DB::table('sr_menuscript_info')->where('paperUniqID', '=',$paperId )->update($status_menuscript);
+
+        if ($reviewer_submission) {
+            return response()->json(['status' => 'success', 'message' =>  "Succesfully  Reviewer Submission", 'data'=>$data]);
         }else{
             return response()->json(['status' => 'error', 'message' =>  "Something Went Wrong"]);
         }
